@@ -18,7 +18,7 @@ const User = new mongoose.Schema({
     email: String,
     lastSeen: Date,
     profile: Buffer,
-    chats:[mongoose.Schema.Types.ObjectId]
+    chats:[String]
 });
 const userModel = mongoose.model("User", User);
 
@@ -26,7 +26,7 @@ router.route("/users")
     .get(async(req, res) => {
         try{
             let user = await userModel.findOne({username:req.query["username"], password:req.query["password"]}, {_id:0});
-            res.status(200).json(user.toJSON());
+            res.status(200).json(user);
         }
         catch{
             res.sendStatus(404)
@@ -53,7 +53,7 @@ router.get('/users/:id', async(req, res)=>{
         let requester = await userModel.findOne({username:req.query['username'], password:req.query['password']});
         if(requester){
             let target = await userModel.findOne({_id:req.params["id"]}, {password:0, email:0, chats:0});
-            res.status(200).json(target.toJSON());
+            res.status(200).json(target);
         }
         else{
             res.sendStatus(403);
